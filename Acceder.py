@@ -5,7 +5,9 @@ import os
 def mostrar_entrada_archivo():
     parser = argparse.ArgumentParser(description='Procesa un archivo de registros separados por punto y coma.')
     parser.add_argument('archivo', nargs='?', default=None, help='ruta del archivo a procesar')
-    args = parser.parse_args()
+    # In notebooks/interactive sessions, Jupyter adds extra args like --f=kernel.json.
+    # We ignore unknown args so the same function works in both CLI and Jupyter.
+    args, _ = parser.parse_known_args()
 
     p = args.archivo
     if not p:
