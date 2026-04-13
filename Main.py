@@ -33,32 +33,57 @@ df = df[["combo 1", "combo 2", "combo 3", "combo 4"]]
 
 
 df = df.dropna(how="all")
+#print(f"{df}")
 
 
-
-print(f"{df}")
 
 df_tarifa= df.iloc[::2, 0:4].copy().reset_index(drop=True)#.tolist()
-print(df_tarifa)
-
-
+#print(df_tarifa)
 
 df_cu= df.iloc[1::2, :4].copy().reset_index(drop=True)#.tolist()
-print(f"CU:\n {df_cu}")
+#print(f"CU:\n {df_cu}")
 
 df_factor = 1-(df_tarifa.divide(df_cu)).round(7)
-print(f"\nFACTOR:\n {df_factor}")
+#print(f"\nFACTOR:\n {df_factor}")
+
+
 
 df_final = pd.DataFrame({
     "mes": [hoy.strftime("%m")]*12,
     "ano": [hoy.year]*12,
     "estrato": [(x % 3) + 1 for x in range(12)],
     "combo": [x for x in range(1, 5) for y in range(1, 4)],
-    "CU": [0]*12,
-    "TA": [0]*12,
-    "Factor": [0]*12
+    "CU": [0.0]*12,
+    "TA": [0.0]*12,
+    "Factor": [0.0]*12
 })
 
 
-#print(df_final)
 
+
+filas = 0
+
+for combo in df_cu.columns:
+    for i in range(len(df_cu)):
+        df_final.iloc[filas, 4] = float(df_cu.at[i, combo])
+        filas += 1
+        
+        
+        
+filas = 0
+
+for combo in df_tarifa.columns:
+    for i in range(len(df_tarifa)):
+        df_final.iloc[filas, 5] = float(df_tarifa.at[i, combo])
+        filas += 1
+
+filas = 0
+
+for combo in df_factor.columns:
+    for i in range(len(df_factor)):
+        df_final.iloc[filas, 6] = float(df_factor.at[i, combo])
+        filas += 1
+
+        
+        
+print(df_final)
